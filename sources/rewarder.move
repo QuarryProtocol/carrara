@@ -8,7 +8,7 @@ module carrara::rewarder {
 
     /// Controls token rewards distribution to all [Quarry]s.
     /// The [Rewarder] is also the [quarry_mint_wrapper::Minter] registered to the [quarry_mint_wrapper::MintWrapper].
-    struct Rewarder<phantom TReward> {
+    struct Rewarder<phantom TReward> has key {
         /// Amount of reward tokens distributed per day
         annual_rewards_rate: u64,
         /// Total amount of rewards shares allocated to [Quarry]s
@@ -34,21 +34,56 @@ module carrara::rewarder {
         rewarder: address,
     }
 
-    struct SetRatesCapability has store {
+    struct SetRatesCapability has copy, drop, store {
         rewarder: address
     }
 
-    struct CreateQuarryCapability has store {
+    struct CreateQuarryCapability has copy, drop, store {
         rewarder: address
     }
 
-    struct AllocateSharesCapability has store {
+    struct AllocateSharesCapability has copy, drop, store {
         rewarder: address
     }
 
     /// Authority allowed to pause a [Rewarder].
-    struct PauseCapability has store {
+    struct PauseCapability has copy, drop, store {
         rewarder: address
+    }
+
+    /// Sets whether the [Rewarder] is paused.
+    public fun set_paused<TReward>(
+        pause_capability: &PauseCapability,
+        value: bool
+    ) acquires Rewarder {
+        let rewarder = borrow_global_mut<Rewarder<TReward>>(pause_capability.rewarder);
+        rewarder.is_paused = value;
+    }
+
+    /// Container type for rewarder-related capabilities.
+    struct Operator has key, store {
+        set_rates_cap: SetRatesCapability,
+        create_quarry_cap: CreateQuarryCapability,
+        allocate_shares_cap: AllocateSharesCapability,
+        pause_cap: PauseCapability,
+    }
+
+    /// Creates a new [Operator] for the given [Rewarder].
+    fun new_operator(rewarder: address): Operator {
+        Operator {
+            set_rates_cap: SetRatesCapability {
+                rewarder
+            },
+            create_quarry_cap: CreateQuarryCapability {
+                rewarder
+            },
+            allocate_shares_cap: AllocateSharesCapability {
+                rewarder
+            },
+            pause_cap: PauseCapability {
+                rewarder
+            },
+        }
     }
 
     /// Computes the amount of rewards a [crate::Quarry] should receive, annualized.

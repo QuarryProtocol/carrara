@@ -7,7 +7,7 @@ module carrara::quarry {
     use carrara::miner::{Self, Miner};
 
     /// A pool which distributes tokens to its [Miner]s.
-    struct Quarry<phantom TCollateral> has key, store {
+    struct Quarry<phantom TCollateral> has key {
         /// Timestamp when quarry rewards cease
         famine_ts: u64,
         /// Timestamp of last checkpoint
