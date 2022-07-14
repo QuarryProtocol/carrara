@@ -1,0 +1,24 @@
+[package]
+name = "carrara"
+version = "0.0.0"
+authors = ["Ian Macalinao <ian@saber.so>"]
+license = "Apache-2.0"
+
+[readme]
+title = "Carrara: Aptos Liquidity Mining"
+module = "carrara"
+
+[addresses]
+Std = "0x1"
+AptosFramework = "0x1"
+carrara = "0x8f6ce396d6c4b9c7c992f018e94df010ec5c50835d1c83186c023bfa22df638c"
+
+[dependencies.MoveStdlib]
+git = "https://github.com/aptos-labs/aptos-core.git"
+subdir = "aptos-move/framework/move-stdlib"
+rev = "45140fcf79c2afd3ce8c86bb9952e90632533cbb"
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-core.git"
+subdir = "aptos-move/framework/aptos-framework"
+rev = "45140fcf79c2afd3ce8c86bb9952e90632533cbb"
